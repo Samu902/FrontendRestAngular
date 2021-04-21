@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { RestService } from "../rest.service";
-import { Employee } from "../shared/employee";
+import { Student } from "../shared/student";
 
 @Component({
     selector: 'app-table',
@@ -10,14 +10,14 @@ import { Employee } from "../shared/employee";
 export class TableComponent
 {
     restService : RestService;
-    employees : Employee[];
+    students : Student[];
 
     constructor(restService : RestService) 
     {
         this.restService = restService;
-        this.employees = [];
+        this.students = [];
 
-        this.loadEmployees();
+        this.loadStudents();
     }
 
     //nel template in (click) non si possono chiamare funzioni globali, quindi c'è questa funzione che media
@@ -26,43 +26,51 @@ export class TableComponent
         return window.prompt(message);
     }
 
-    loadEmployees() : void
+    loadStudents() : void
     {
-        this.restService.getData("http://localhost:4200/api/tutorial/1.0/employees")
-            .subscribe(data => this.employees = data);
+        this.restService.getData("http://localhost:4200/api/student.php")
+            .subscribe(data => this.students = data);
     }
 
-    addNewEmployee(firstName : string, lastName : string, email : string, phone : string) : void
+    addNewStudent(name : string, surname : string, sidi_code : string, tax_code : string) : void
     {
-        let emp : Employee = {
-			employeeId: Math.floor(Math.random() * 1000000),
-			firstName: firstName,
-			lastName: lastName,
-			email: email,
-			phone: phone
+        let st : Student = {
+			id: Math.floor(Math.random() * 1000000),
+			name: name,
+			surname: surname,
+			sidi_code: sidi_code,
+			tax_code: tax_code
 		};
 
-        this.restService.postData("http://localhost:4200/api/tutorial/1.0/employees", emp)
-            .subscribe(data => this.loadEmployees());
+        this.restService.postData("http://localhost:4200/api/student.php", st)
+            .subscribe(data => this.loadStudents());
     }
 
-    removeEmployee(id : number) : void
+    removeStudent(id : number) : void
     {
-        this.restService.deleteData("http://localhost:4200/api/tutorial/1.0/employees/" + id)
-            .subscribe(data => this.loadEmployees());
-    }
-
-    updateEmployee(id : number, firstName : string, lastName : string, email : string, phone : string) : void
-    {
-        let emp : Employee = {
-			employeeId: id,
-			firstName: firstName,
-			lastName: lastName,
-			email: email,
-			phone: phone
+        let st : Student = {
+			id: id,
+			name: "",
+			surname: "",
+			sidi_code: "",
+			tax_code: ""
 		};
 
-        this.restService.putData("http://localhost:4200/api/tutorial/1.0/employees/" + id, emp)
-            .subscribe(data => this.loadEmployees());
+        this.restService.deleteData("http://localhost:4200/api/student.php", st)
+            .subscribe(data => this.loadStudents());
+    }
+
+    updateStudent(id : number, name : string, surname : string, sidi_code : string, tax_code : string) : void
+    {
+        let st : Student = {
+			id: id,
+			name: name,
+			surname: surname,
+			sidi_code: sidi_code,
+			tax_code: tax_code
+		};
+
+        this.restService.putData("http://localhost:4200/api/student.php", st)
+            .subscribe(data => this.loadStudents());
     }
 }

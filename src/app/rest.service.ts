@@ -1,8 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Observable, throwError } from 'rxjs';
 import { retry, catchError } from "rxjs/operators";
-import { Employee } from "./shared/employee";
-import { HttpClient, HttpHeaders } from "@angular/common/http";
+import { Student } from "./shared/student";
+import { HttpClient, HttpHeaders, JsonpClientBackend } from "@angular/common/http";
 
 @Injectable({
   	providedIn: 'root'
@@ -12,44 +12,42 @@ export class RestService
 	constructor(private http : HttpClient) 
 	{ }
 	
-	getData(apiUrl : string) : Observable<Employee[]>
+	getData(apiUrl : string) : Observable<Student[]>
 	{
-        return this.http.get<Employee[]>(apiUrl)
+        return this.http.get<Student[]>(apiUrl)
             .pipe(
-                retry(1),
-                catchError(this.handleError)
+                retry(1)
             );
 	}
 
-	postData(apiUrl : string, body : any) : Observable<Employee[]>
+	postData(apiUrl : string, body : any) : Observable<Student[]>
 	{
-		return this.http.post<Employee[]>(apiUrl, body)
+		return this.http.post<Student[]>(apiUrl, body)
 			.pipe(
-				retry(1),
-				catchError(this.handleError)
+				retry(1)
 			);
 	}
 	
-	deleteData(apiUrl : string) : Observable<Employee[]>
+	deleteData(apiUrl : string, body : any) : Observable<Student[]>
 	{
-		return this.http.delete<Employee[]>(apiUrl)
+		const options = {
+			headers: new HttpHeaders({
+			    'Content-Type': 'application/json'
+			}),
+			body: body
+        }
+
+		return this.http.delete<Student[]>(apiUrl, options)
 			.pipe(
-				retry(1),
-				catchError(this.handleError)
+				retry(1)
 			);
 	}
 
-	putData(apiUrl : string, body : any) : Observable<Employee[]>
+	putData(apiUrl : string, body : any) : Observable<Student[]>
 	{
-		return this.http.put<Employee[]>(apiUrl, body)
+		return this.http.put<Student[]>(apiUrl, body)
 			.pipe(
-				retry(1),
-				catchError(this.handleError)
+				retry(1)
 			);
 	}
-
-    private handleError(handleError: any): import("rxjs").OperatorFunction<Employee[], any> 
-    {
-        throw new Error('Method not implemented.');
-    }
 }
